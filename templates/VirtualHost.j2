@@ -1,0 +1,33 @@
+<VirtualHost *:80>
+  ServerName {{ hostname }}
+  DirectoryIndex index.html
+  DocumentRoot /var/www/html/{{ hostname }}
+#  Redirect permanent /  https://{{ hostname }}
+  
+  <Directory "/var/www/html/{{ hostname }}">
+    order allow,deny
+    allow from all
+
+    RewriteEngine on
+
+    # Force to redirect 
+    RewriteCond %{HTTP_HOST} !^\. [NC]
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+
+    RewriteCond %{REQUEST_FILENAME} -s [OR]
+    RewriteCond %{REQUEST_FILENAME} -l [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^.*$ - [NC,L]
+    RewriteRule ^(.*) /index.html [NC,L]
+    <filesMatch "\.(html|htm|js|css)$">
+        FileETag None
+        <ifModule mod_headers.c>
+            Header unset ETag
+            Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+            Header set Pragma "no-cache"
+            Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
+        </ifModule>
+    </filesMatch>
+  </Directory>
+</VirtualHost>

@@ -1,0 +1,36 @@
+# Create folder 
+- name: Create project folder /var/www/html/{{ hostname }}
+  file:
+    path: /var/www/html/{{ hostname }}
+    state: directory
+  sudo: yes
+
+# Create virtualhost
+- name: Install VirtualHost file 
+  template:
+    src: templates/VirtualHost.j2
+    dest: /etc/httpd/sites-available/{{ hostname }}.conf
+  sudo: yes
+
+# Enable site
+- name: Enable VirtualHost
+  file:
+    src: /etc/httpd/sites-available/{{ hostname }}.conf
+    dest: /etc/httpd/sites-enabled/{{ hostname }}.conf
+    state: link
+  sudo: yes
+
+# Reload httpd
+- name: Enable reload httpd on systemctl
+  systemd:
+    name: httpd
+    state: restarted
+    enabled: yes
+  sudo: yes
+
+# TODO: Move certbot ssl file to sites-available and make link
+  
+# Create SSL Certbot
+- name: run certbot
+  command: certbot --email devops@talentosoftware.com  --apache -n  -d {{ hostname }}  --agree-tos 
+  sudo: yes

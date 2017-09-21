@@ -1,0 +1,78 @@
+- name: Install epel repository 
+  yum:
+    name: epel-release
+    state: latest
+  sudo: yes
+
+- name: Install apache 
+  yum:
+    name: httpd
+    state: latest
+  sudo: yes
+
+- name: Add nodejs repo 6x
+  shell: curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -
+  sudo: yes
+  
+- name: Install nodejs
+  yum:
+    name: nodejs
+    state: latest
+  sudo: yes
+
+- name: Install vim
+  yum:
+    name: vim
+    state: latest
+  sudo: yes
+
+- name: Install Certbot (mod_ssl)
+  yum: 
+    name: mod_ssl
+    state: latest
+  sudo: yes
+
+- name: Install Certbot (python-certbot-apache)
+  yum:
+    name: python-certbot-apache
+    state: latest
+  sudo: yes
+
+- name: Add mongo repo
+  yum_repository:
+    name: MongoDBRepository
+    description: MongoDB YUM repo
+    baseurl: https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.4/x86_64/
+    gpgcheck: 1
+    gpgkey: https://www.mongodb.org/static/pgp/server-3.4.asc
+    enabled: yes
+  sudo: yes
+
+- name: Install Mongo
+  yum:
+    name: mongodb-org
+    state: latest
+  sudo: yes
+
+- name: Enable and start httpd on systemctl
+  systemd:
+    name: httpd
+    state: started
+    enabled: yes
+  sudo: yes
+
+- name: Enable and start mongod on systemctl
+  systemd:
+    name: mongod
+    state: started
+    enabled: yes
+  sudo: yes
+  
+- name: Install pm2
+    npm:
+      name: pm2
+      global: yes
+    sudo: yes
+
+- name: Install optional packages
+  

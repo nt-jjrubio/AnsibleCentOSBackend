@@ -1,0 +1,11 @@
+- name: Install ImageMagick
+  yum:
+    name: ImageMagick
+    state: latest
+  sudo: yes
+
+- name: Install LibreOffice
+  yum:
+    name: libreoffice
+    state: latest
+  sudo: yes

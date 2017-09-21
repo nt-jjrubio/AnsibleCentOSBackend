@@ -1,0 +1,41 @@
+# How to run this playbook: 
+#
+# Create host inventory and variables --> hosts.ini <-- 
+#
+# - hosts:
+#     90.90.90.90
+#   vars: 
+#     hostname: url.example.com
+#
+# Need ansible latest version (Check how to install in your distro) http://docs.ansible.com/ansible/latest/intro_installation.html 
+# ansible-playbook -u USER --private-key PRIVATEKEYFILE Magna-Install-FrontEnd.yaml
+# 
+---
+- hosts: all
+
+  tasks:
+    - debug: 
+       msg: "Run tasks on {{ hostname }}"
+      
+    - debug:
+        msg: "Swap memory --> {{ ansible_swaptotal_mb }} <--"
+
+    - name: Ping to check if server has alive
+      ping:
+        
+
+    # Create swapfile
+    - include: Utils-playbooks/CentOS-swapfile.yaml
+      when: ansible_swaptotal_mb < 1
+
+    # Install packages (Apache, node, certboot, MongoDB)
+    - include: Backend-playbooks/Backend-tasks-Packages.yaml
+
+    # Install optional packages (LibreOffice, imagemagic...)
+    - include: Backend-playbooks/Backend-tasks-OptionalPackages.yaml
+
+    # Prepare CentOS Httpd to use Sites-Available <--> Sites-Enabled
+   # - include: Utils-playbooks/CentOS-httpd-VirtualHost.yaml
+
+    # Create virtualhost
+   # - include: FrontEnd-playbooks/FrontEnd-tasks-VirtualHost.yaml
