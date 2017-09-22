@@ -1,33 +1,18 @@
-<VirtualHost *:80>
-  ServerName {{ hostname }}
-  DirectoryIndex index.html
-  DocumentRoot /var/www/html/{{ hostname }}
-#  Redirect permanent /  https://{{ hostname }}
-  
-  <Directory "/var/www/html/{{ hostname }}">
-    order allow,deny
-    allow from all
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+Listen {{ nodesslport }}
 
-    RewriteEngine on
+<IfModule mod_ssl.c>
+  <VirtualHost *:{{ nodesslport }}>
+          ProxyPreserveHost On
+          ProxyRequests Off
+          ProxyPass / http://localhost:{{ nodeport }}/
+          ProxyPassReverse / http://localhost:{{ nodeport }}/    
 
-    # Force to redirect 
-    RewriteCond %{HTTP_HOST} !^\. [NC]
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+          SSLCertificateFile /etc/letsencrypt/live/{{ hostname }}/cert.pem
+          SSLCertificateKeyFile /etc/letsencrypt/live/{{ hostname }}/privkey.pem
+          Include /etc/letsencrypt/options-ssl-apache.conf
+          SSLCertificateChainFile /etc/letsencrypt/live/{{ hostname }}/chain.pem    
+  </VirtualHost>
+</IfModule>
 
-
-    RewriteCond %{REQUEST_FILENAME} -s [OR]
-    RewriteCond %{REQUEST_FILENAME} -l [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^.*$ - [NC,L]
-    RewriteRule ^(.*) /index.html [NC,L]
-    <filesMatch "\.(html|htm|js|css)$">
-        FileETag None
-        <ifModule mod_headers.c>
-            Header unset ETag
-            Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
-            Header set Pragma "no-cache"
-            Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
-        </ifModule>
-    </filesMatch>
-  </Directory>
-</VirtualHost>

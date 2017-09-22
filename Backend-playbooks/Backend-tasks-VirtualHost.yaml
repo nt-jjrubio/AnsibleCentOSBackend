@@ -1,7 +1,13 @@
-# Create folder 
-- name: Create project folder /var/www/html/{{ hostname }}
+# Create project folders
+- name: Create backend project folder /opt/pm2APIs
   file:
-    path: /var/www/html/{{ hostname }}
+    path: /opt/pm2APIs
+    state: directory
+  sudo: yes
+
+- name: Create backend project folder /opt/pm2Apis/{{ hostname }}
+  file:
+    path: /opt/pm2Apis/{{ hostname }}
     state: directory
   sudo: yes
 
@@ -9,14 +15,14 @@
 - name: Install VirtualHost file 
   template:
     src: templates/VirtualHost.j2
-    dest: /etc/httpd/sites-available/{{ hostname }}.conf
+    dest: /etc/httpd/sites-available/APISSL_{{ hostname }}.conf
   sudo: yes
 
 # Enable site
 - name: Enable VirtualHost
   file:
-    src: /etc/httpd/sites-available/{{ hostname }}.conf
-    dest: /etc/httpd/sites-enabled/{{ hostname }}.conf
+    src: /etc/httpd/sites-available/APISSL_{{ hostname }}.conf
+    dest: /etc/httpd/sites-enabled/APISSL_{{ hostname }}.conf
     state: link
   sudo: yes
 
@@ -31,6 +37,6 @@
 # TODO: Move certbot ssl file to sites-available and make link
   
 # Create SSL Certbot
-- name: run certbot
-  command: certbot --email devops@talentosoftware.com  --apache -n  -d {{ hostname }}  --agree-tos 
-  sudo: yes
+#- name: run certbot
+#  command: certbot --email devops@talentosoftware.com  --apache -n  -d {{ hostname }}  --agree-tos 
+#  sudo: yes
