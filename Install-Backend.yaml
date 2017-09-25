@@ -24,18 +24,21 @@
       ping:
         
 
-    # Create swapfile
-    - include: Utils-playbooks/CentOS-swapfile.yaml
-      when: ansible_swaptotal_mb < 1
+    # # Create swapfile
+    # - include: Utils-playbooks/CentOS-swapfile.yaml
+    #   when: ansible_swaptotal_mb < 1
 
-    # Install packages (Apache, node, certboot, MongoDB)
-    - include: Backend-playbooks/Backend-tasks-Packages.yaml
+    # # Install packages (Apache, node, certboot, MongoDB)
+    # - include: Backend-playbooks/Backend-tasks-Packages.yaml
 
-    # Install optional packages (LibreOffice, imagemagic...)
-    - include: Backend-playbooks/Backend-tasks-OptionalPackages.yaml
+    # # Install optional packages (LibreOffice, imagemagic...)
+    # - include: Backend-playbooks/Backend-tasks-OptionalPackages.yaml
 
-    # Prepare CentOS Httpd to use Sites-Available <--> Sites-Enabled
-    - include: Utils-playbooks/CentOS-httpd-VirtualHost.yaml
+    # # Prepare CentOS Httpd to use Sites-Available <--> Sites-Enabled
+    # - include: Utils-playbooks/CentOS-httpd-VirtualHost.yaml
 
-    # Create proxy
-    - include: Backend-playbooks/Backend-tasks-VirtualHost.yaml
+    # # Create proxy
+    # - include: Backend-playbooks/Backend-tasks-VirtualHost.yaml
+
+    # Upload project
+    - include: Backend-playbooks/Backend-UploadProject.yaml
