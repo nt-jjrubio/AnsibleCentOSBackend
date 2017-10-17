@@ -22,23 +22,35 @@
 
     - name: Ping to check if server has alive
       ping:
-        
+
+    - name: set timezone to Europe/Madrid
+      timezone:
+        name: Europe/Madrid
+      become: true
+
+    # SeLinux allow proxy 
+    - name: setbool
+      seboolean:
+        name: httpd_can_network_connect
+        state: yes
+        persistent: yes
+      become: true
 
     # # Create swapfile
-    # - include: Utils-playbooks/CentOS-swapfile.yaml
-    #   when: ansible_swaptotal_mb < 1
+    - include: Utils-playbooks/CentOS-swapfile.yaml
+      when: ansible_swaptotal_mb < 1
 
     # # Install packages (Apache, node, certboot, MongoDB)
-    # - include: Backend-playbooks/Backend-tasks-Packages.yaml
+    - include: Backend-playbooks/Backend-tasks-Packages.yaml
 
     # # Install optional packages (LibreOffice, imagemagic...)
-    # - include: Backend-playbooks/Backend-tasks-OptionalPackages.yaml
+    - include: Backend-playbooks/Backend-tasks-OptionalPackages.yaml
 
     # # Prepare CentOS Httpd to use Sites-Available <--> Sites-Enabled
-    # - include: Utils-playbooks/CentOS-httpd-VirtualHost.yaml
+     - include: Utils-playbooks/CentOS-httpd-VirtualHost.yaml
 
     # # Create proxy
-    # - include: Backend-playbooks/Backend-tasks-VirtualHost.yaml
+    - include: Backend-playbooks/Backend-tasks-VirtualHost.yaml
 
     # Upload project
     - include: Backend-playbooks/Backend-UploadProject.yaml

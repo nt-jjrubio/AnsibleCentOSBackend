@@ -3,20 +3,22 @@
   file:
     path: /opt/pm2APIs
     state: directory
-  sudo: yes
+  become: true
 
-- name: Create backend project folder /opt/pm2Apis/{{ hostname }}
+- name: Create backend project folder /opt/pm2APIs/{{ hostname }}
   file:
-    path: /opt/pm2Apis/{{ hostname }}
+    path: /opt/pm2APIs/{{ hostname }}
     state: directory
-  sudo: yes
+    owner: centos
+    group: centos
+  become: true
 
 # Create virtualhost
 - name: Install VirtualHost file 
   template:
     src: templates/VirtualHost.j2
     dest: /etc/httpd/sites-available/APISSL_{{ hostname }}.conf
-  sudo: yes
+  become: true
 
 # Enable site
 - name: Enable VirtualHost
@@ -24,7 +26,7 @@
     src: /etc/httpd/sites-available/APISSL_{{ hostname }}.conf
     dest: /etc/httpd/sites-enabled/APISSL_{{ hostname }}.conf
     state: link
-  sudo: yes
+  become: true
 
 # Reload httpd
 - name: Enable reload httpd on systemctl
@@ -32,7 +34,7 @@
     name: httpd
     state: restarted
     enabled: yes
-  sudo: yes
+  become: true
 
 # TODO: Move certbot ssl file to sites-available and make link
   

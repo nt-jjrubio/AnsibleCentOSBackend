@@ -2,10 +2,10 @@
   yum:
     name: ImageMagick
     state: latest
-  sudo: yes
+  become: true
 
 - name: Install LibreOffice
   yum:
     name: libreoffice
     state: latest
-  sudo: yes
+  become: true

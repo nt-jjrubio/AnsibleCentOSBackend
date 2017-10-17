@@ -4,7 +4,7 @@
     path: /tmp/back-{{ hostname }}
     state: directory
 
-- name: Copy project 
+- name: Upload project local --> server
   synchronize:
     src: ./project/
     dest: "/tmp/back-{{ hostname }}"
@@ -13,19 +13,16 @@
   npm: 
     path: "/tmp/back-{{ hostname }}/"
 
-# - name: Create project opt folder /opt/pm2Apis/back-{{ hostname }}
-#   file:
-#     path: /opt/pm2Apis/{{ hostname }}
-#     state: directory
-#   sudo: yes
-
 - name: Copy project to /var/www
-  command: cp -R /tmp/back-{{ hostname }}/ /opt/pm2Apis/{{ hostname }}
-  sudo: yes
+  command: cp -R /tmp/back-{{ hostname }}/. /opt/pm2APIs/{{ hostname }}
+#  become: true
 
 - name: Create pm2 service API-{{ hostname }}
-  command: pm2 start /opt/pm2Apis/{{ hostname }}/app/server.js --name "API-{{ hostname }}"
+  command: pm2 start /opt/pm2APIs/{{ hostname }}/app/server.js --name "API-{{ hostname }}"
+  args:
+    chdir: /opt/pm2APIs/{{ hostname }}/
 
 - name: pm2 startup
   command: pm2 startup
-  sudo: yes
+  become: true
+

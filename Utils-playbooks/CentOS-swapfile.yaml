@@ -2,20 +2,20 @@
 
 - name: Create swapfile
   command: dd if=/dev/zero of=/swapfile bs=1M count=2048 
-  sudo: yes
+  become: true
 
 - name: Format swapfile
   command: mkswap /swapfile
-  sudo: yes
+  become: true
 
 - name: Change swapfile permissions
   file: path=/swapfile
-  sudo: yes
+  become: true
 
 - name: Enable swap
   command: swapon /swapfile
-  sudo: yes
+  become: true
 
 - name: Add to fstab
   action: lineinfile dest=/etc/fstab regexp="swapfile" line="/swapfile none swap sw 0 0" state=present
-  sudo: yes
+  become: true

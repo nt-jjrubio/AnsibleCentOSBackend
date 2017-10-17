@@ -4,23 +4,23 @@
   file:
     path: /etc/httpd/sites-available
     state: directory
-  sudo: yes
+  become: true
 
 - name: Create folder /etc/httpd/sites-enabled 
   file:
     path: /etc/httpd/sites-enabled
     state: directory
-  sudo: yes
+  become: true
 
 - name: Create httpd config to use sites-enabled config files
   copy:
     content: "IncludeOptional sites-enabled/*.conf"
     dest: "/etc/httpd/conf.d/VirtualHost.conf"
-  sudo: yes
+  become: true
 
 - name: Enable reload httpd on systemctl
   systemd:
     name: httpd
     state: restarted
     enabled: yes
-  sudo: yes
+  become: true
